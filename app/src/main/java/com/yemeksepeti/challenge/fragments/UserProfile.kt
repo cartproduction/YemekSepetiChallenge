@@ -1,8 +1,10 @@
 package com.solvepark.yemekgelircustomer
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.Menu
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
@@ -48,6 +50,7 @@ class UserProfile: Fragment() {
             user = bundle.getSerializable("dummyUser") as UserDetailsModel
         binding.data = user
         loadImage(binding.profileImage,user.profilImage!!)
+
 
     }
 
