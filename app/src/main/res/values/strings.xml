@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">YSChallenge</string>
+    <string name="invalidemail">Lütfen geçerli bir email adresi giriniz</string>
+    <string name="invalidpassword">Lütfen en az 6 haneden oluşan şifrenizi giriniz</string>
+    <string name="responserror">Response hatası</string>
+    <string name="loadingmessage">Yükleniyor...</string>
+    <string name="logintext">Giriş Yap</string>
+    <string name="password">Şifre</string>
+    <string name="emailtext">Email</string>
+    <string name="forgotpassword">Şifremi Unuttum</string>
+    <string name="name">Ad:</string>
+    <string name="lastname">Soyad:</string>
+    <string name="date">Doğum Tarihi:</string>
+    <string name="email">Eposta:</string>
+    <string name="phone">Telefon No:</string>
+    <string name="adress">Adress:</string>
+    <string name="userslist">Kişiler</string>
+    <string name="pleasefillform">Lütfen eksik kısımları doldurunuz</string>
+</resources>
