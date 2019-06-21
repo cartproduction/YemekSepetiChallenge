@@ -64,18 +64,9 @@ class UserProfile: Fragment() {
         val progressBar = ProgressDialog(requireContext())
 
         val userObserver = Observer<UserDetailsModel?> { response ->
-            Handler().postDelayed({
-                //The following code will execute after the 5 seconds.
-
-                try {
-                    progressBar.dismiss()
-                    binding.data = response
-                    loadImage(binding.profileImage,response!!.profilImage!!)
-
-                } catch (ignored: Exception) {
-                    ignored.printStackTrace()
-                }
-            }, 500)  // Give a 5 seconds delay.
+            progressBar.dismiss()
+            binding.data = response
+            loadImage(binding.profileImage,response!!.profilImage!!)
 
         }
 
