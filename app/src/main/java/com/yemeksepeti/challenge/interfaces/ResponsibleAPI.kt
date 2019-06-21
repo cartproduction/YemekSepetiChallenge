@@ -4,6 +4,7 @@ import com.raventech.fujibas.models.*
 import com.yemeksepeti.challenge.models.UserDetailsModel
 import com.yemeksepeti.challenge.models.UserModel
 import com.yemeksepeti.challenge.response.BaseResponse
+import com.yemeksepeti.challenge.response.UserListResponse
 import io.reactivex.Observable
 import retrofit2.http.*
 
@@ -13,7 +14,7 @@ interface ResponsibleAPI {
     fun login(@Body model: LoginModel): Observable<LoginResponse>
 
     @GET("users/list")
-    fun getUsers(): Observable<UserModel>
+    fun getUsers(): Observable<UserListResponse>
 
     @GET("users/{id}")
     fun getUserByID(@Path("id") id : String ): Observable<UserDetailsModel>

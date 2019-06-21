@@ -13,6 +13,7 @@ import com.raventech.fujibas.interfaces.ResponsibleAPI
 import com.yemeksepeti.challenge.R
 import com.yemeksepeti.challenge.application.YemekApp.Companion.addFragment
 import com.yemeksepeti.challenge.fragments.UserList
+import com.yemeksepeti.challenge.response.UserListResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,7 +24,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initToolbar()
-        addFragment(supportFragmentManager, UserList(), false, "UserList")
+
+        val userList =  intent.extras.get("userList") as UserListResponse
+        val fragment = UserList()
+        val bundle =  Bundle()
+        bundle.putSerializable("userList", userList)
+        fragment.arguments = bundle
+        addFragment(supportFragmentManager, fragment, false, "UserList")
     }
 
     override fun onBackPressed() {
@@ -53,35 +60,6 @@ class MainActivity : AppCompatActivity() {
         actionBar.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.colorAccent)))
         supportActionBar!!.setDisplayHomeAsUpEnabled(false)
 
-        //getUsers()
-    }
-
-    private fun getUsers() {
-        ApiClient.getClient(this)
-            .create(ResponsibleAPI::class.java)
-            .getUsers()
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { response ->
-                    if (response != null) {
-
-
-                    } else
-                        throw Throwable(getString(R.string.responserror))
-
-
-                },
-                {
-                    SuperActivityToast.create(this, Style(), Style.TYPE_STANDARD)
-                        .setText(it.message)
-                        .setDuration(Style.DURATION_SHORT)
-                        .setFrame(Style.FRAME_LOLLIPOP)
-                        .setColor(resources.getColor(R.color.colorAccent))
-                        .setAnimations(Style.ANIMATIONS_POP).show()
-
-                }
-            )
     }
 
 

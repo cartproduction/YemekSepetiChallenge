@@ -4,23 +4,22 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import com.github.johnpersano.supertoasts.library.Style
 import com.github.johnpersano.supertoasts.library.SuperActivityToast
-import io.reactivex.android.schedulers.AndroidSchedulers
-import android.app.Activity
 import android.os.Handler
 import android.view.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
-import com.raventech.fujibas.interfaces.ApiClient
-import com.raventech.fujibas.interfaces.ResponsibleAPI
-import com.raventech.fujibas.models.LoginModel
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.raventech.fujibas.models.LoginResponse
 import com.yemeksepeti.challenge.R
 import com.yemeksepeti.challenge.activities.MainActivity
-import com.yemeksepeti.challenge.application.YemekApp.Companion.TOKEN
+import com.yemeksepeti.challenge.repository.UserRepository
+import com.yemeksepeti.challenge.response.UserListResponse
+import com.yemeksepeti.challenge.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.activity_user.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
@@ -29,6 +28,8 @@ import kotlinx.android.synthetic.main.toolbar_layout.*
 //1
 class Login : Fragment() {
 
+    lateinit var userViewModel: UserViewModel
+    lateinit var userRepository: UserRepository
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     // Inflate the layout for this fragment
       setHasOptionsMenu(true)
@@ -62,6 +63,10 @@ class Login : Fragment() {
     }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+
+      userViewModel = ViewModelProviders.of(this).get(UserViewModel::class.java)
+      userRepository = UserRepository()
 
       view.isFocusableInTouchMode = true
       view.requestFocus()
@@ -143,27 +148,38 @@ class Login : Fragment() {
       im?.hideSoftInputFromWindow(loginEmail.windowToken,
           InputMethodManager.RESULT_UNCHANGED_SHOWN
       )
-      //loginUser(loginEmail.text.toString(),loginPass.text.toString())
+
+        val progressBar = ProgressDialog(requireContext())
+
+        val loginObserver = Observer<UserListResponse?> { response ->
+            Handler().postDelayed({
+                //The following code will execute after the 5 seconds.
+
+                try {
+                    progressBar.dismiss()
+                    val i = Intent(requireActivity(), MainActivity::class.java)
+                    val bundle =  Bundle()
+                    bundle.putSerializable("userList", response)
+                    i.putExtras(bundle)
+                    requireActivity().startActivity(i)
+                    requireActivity().finish()
+
+                } catch (ignored: Exception) {
+                    ignored.printStackTrace()
+                }
+            }, 500)  // Give a 5 seconds delay.
+
+        }
+
+        userViewModel!!.userList.observe(this,loginObserver)
 
 
-        var progressBar = ProgressDialog(requireContext())
         progressBar.setCancelable(false)
         progressBar.setMessage(getString(R.string.loadingmessage))
         progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressBar.show()
-        Handler().postDelayed({
-            //The following code will execute after the 5 seconds.
+        userRepository.loginWithGetAllUser(loginEmail.text.toString(),loginPass.text.toString(),requireContext(),userViewModel)
 
-            try {
-                progressBar.dismiss()
-                val i = Intent(requireActivity(), MainActivity::class.java)
-                requireActivity().startActivity(i)
-                requireActivity().finish()
-
-            } catch (ignored: Exception) {
-                ignored.printStackTrace()
-            }
-        }, 1000)  // Give a 5 seconds delay.
 
 
 
@@ -177,51 +193,5 @@ class Login : Fragment() {
 
 
   }
-
-    private fun loginUser(email : String, password : String) {
-
-        val progressBar = ProgressDialog(requireContext())
-        progressBar.setCancelable(false)
-        progressBar.setMessage(getString(R.string.loadingmessage))
-        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressBar.show()
-
-        val model = LoginModel()
-        model.email = email
-        model.password = password
-
-        ApiClient.getClient(requireContext())
-                .create(ResponsibleAPI::class.java)
-                .login(model)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { response ->
-                            progressBar.dismiss()
-                            if (response != null) {
-
-
-                            } else
-                                throw Throwable(getString(R.string.responserror))
-
-
-                        },
-                        {
-                            progressBar.dismiss()
-                            SuperActivityToast.create(
-                                requireContext(),
-                                Style(),
-                                Style.TYPE_STANDARD
-                            )
-                                    .setText(it.message)
-                                    .setDuration(Style.DURATION_SHORT)
-                                    .setFrame(Style.FRAME_LOLLIPOP)
-                                    .setColor(resources.getColor(R.color.colorAccent))
-                                    .setAnimations(Style.ANIMATIONS_POP).show()
-                            loginEmail.requestFocus()
-
-                        }
-                )
-
-    }
 
 }

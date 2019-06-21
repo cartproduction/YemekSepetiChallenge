@@ -1,7 +1,10 @@
 package com.solvepark.yemekgelircustomer
 
-import android.content.Context
+import android.app.ProgressDialog
+import androidx.lifecycle.Observer
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import android.view.Menu
 import android.view.inputmethod.InputMethodManager
@@ -12,6 +15,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.github.johnpersano.supertoasts.library.Style
 import com.github.johnpersano.supertoasts.library.SuperActivityToast
@@ -20,12 +24,16 @@ import com.raventech.fujibas.interfaces.ResponsibleAPI
 import com.yemeksepeti.challenge.R
 import com.yemeksepeti.challenge.databinding.UserprofileBinding
 import com.yemeksepeti.challenge.models.UserDetailsModel
+import com.yemeksepeti.challenge.repository.UserRepository
+import com.yemeksepeti.challenge.viewmodel.UserViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.userprofile.*
 import java.util.*
 
 class UserProfile: Fragment() {
+    lateinit var userViewModel: UserViewModel
+    lateinit var userRepository: UserRepository
     lateinit var user : UserDetailsModel
     private lateinit var binding: UserprofileBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,11 +53,41 @@ class UserProfile: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel::class.java)
+        userRepository = UserRepository()
+
         val bundle = this.arguments
         if (bundle != null)
             user = bundle.getSerializable("dummyUser") as UserDetailsModel
-        binding.data = user
-        loadImage(binding.profileImage,user.profilImage!!)
+
+
+        val progressBar = ProgressDialog(requireContext())
+
+        val userObserver = Observer<UserDetailsModel?> { response ->
+            Handler().postDelayed({
+                //The following code will execute after the 5 seconds.
+
+                try {
+                    progressBar.dismiss()
+                    binding.data = response
+                    loadImage(binding.profileImage,response!!.profilImage!!)
+
+                } catch (ignored: Exception) {
+                    ignored.printStackTrace()
+                }
+            }, 500)  // Give a 5 seconds delay.
+
+        }
+
+        userViewModel!!.userDetails.observe(this,userObserver)
+
+
+        progressBar.setCancelable(false)
+        progressBar.setMessage(getString(R.string.loadingmessage))
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+        progressBar.show()
+        userRepository.getUserByID(user,requireContext(),userViewModel)
+
 
 
     }

@@ -32,7 +32,7 @@
             android:layout_margin="15dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/girl" />
+            android:src="@drawable/ic_collections_24dp" />
 
         <ImageButton
             android:id="@+id/changeImage"

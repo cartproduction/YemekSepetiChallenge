@@ -95,33 +95,4 @@ class UserProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun getUserByID() {
-        ApiClient.getClient(this)
-            .create(ResponsibleAPI::class.java)
-            .getUserByID(user.userId!!)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { response ->
-                    if (response != null) {
-                        userDetails = response
-
-                    } else
-                        throw Throwable(getString(R.string.responserror))
-
-
-                },
-                {
-                    SuperActivityToast.create(this, Style(), Style.TYPE_STANDARD)
-                        .setText(it.message)
-                        .setDuration(Style.DURATION_SHORT)
-                        .setFrame(Style.FRAME_LOLLIPOP)
-                        .setColor(resources.getColor(R.color.colorAccent))
-                        .setAnimations(Style.ANIMATIONS_POP).show()
-
-                }
-            )
-    }
-
-
 }

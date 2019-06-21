@@ -10,24 +10,22 @@ import android.view.LayoutInflater
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.solvepark.yemekgelircustomer.UserProfile
 import com.yemeksepeti.challenge.R
 import com.yemeksepeti.challenge.activities.UserProfileActivity
 import com.yemeksepeti.challenge.adapters.UserRecyclerViewAdapter
-import com.yemeksepeti.challenge.application.YemekApp.Companion.addFragment
 import com.yemeksepeti.challenge.helpers.ItemClickSupport
 import com.yemeksepeti.challenge.helpers.MarginItemDecoration
 import com.yemeksepeti.challenge.models.UserModel
+import com.yemeksepeti.challenge.response.UserListResponse
 import kotlinx.android.synthetic.main.activity_user.*
 import kotlinx.android.synthetic.main.userlist.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class UserList: Fragment() {
-
+    lateinit var userListResponse:UserListResponse
     private var proArray: ArrayList<UserModel> = ArrayList()
     private var productAdapter: UserRecyclerViewAdapter? = null
 
@@ -44,7 +42,13 @@ class UserList: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initProductRecycleView()
+
+        val bundle = this.arguments
+        if (bundle != null)
+            userListResponse = bundle.getSerializable("userList") as UserListResponse
+
+        proArray = userListResponse.users as ArrayList<UserModel>
+        initUsersRecycleView()
 
     }
 
@@ -64,49 +68,24 @@ class UserList: Fragment() {
 
     }
 
-    private fun initProductRecycleView() {
-
-        val user1 = UserModel("user134325432",R.drawable.girl, "Ayşe", "Fatma","aysefatma@mail.com")
-        val user2 = UserModel("user123554351",R.drawable.man, "Hasan", "Aslan","hasanaslan@mail.com")
-        val user3 = UserModel("user113425433",R.drawable.boy, "Kemal", "Taşkıran", "kemaltaskiran@mail.com")
-        val user4 = UserModel("user106780255",R.drawable.girl, "Pelin", "Ertürk", "pelinerturk@mail.com")
-
-        proArray.clear()
-        proArray.add(user1)
-        proArray.add(user2)
-        proArray.add(user3)
-        proArray.add(user4)
+    private fun initUsersRecycleView() {
 
         userList!!.addItemDecoration(
             MarginItemDecoration(
-            resources.getDimension(R.dimen.material_drawer_padding_half).toInt(),0)
+                resources.getDimension(R.dimen.material_drawer_padding_half).toInt(),0)
         )
         productAdapter = UserRecyclerViewAdapter(proArray, requireContext(),requireFragmentManager())
         val gridLayoutManager = GridLayoutManager(requireContext(), 1)
         userList!!.layoutManager = gridLayoutManager
         userList!!.adapter = productAdapter
 
+
         ItemClickSupport.addTo(userList).setOnItemClickListener { menulist, position, v ->
-            var progressBar = ProgressDialog(requireContext())
-            progressBar.setCancelable(false)
-            progressBar.setMessage(getString(R.string.loadingmessage))
-            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            progressBar.show()
-            Handler().postDelayed({
-                //The following code will execute after the 5 seconds.
-
-                try {
-                    progressBar.dismiss()
-                    val i = Intent(requireActivity(), UserProfileActivity::class.java)
-                    val bundle =  Bundle()
-                    bundle.putSerializable("user", proArray[position])
-                    i.putExtras(bundle)
-                    requireActivity().startActivity(i)
-
-                } catch (ignored: Exception) {
-                    ignored.printStackTrace()
-                }
-            }, 1000)  // Give a 5 seconds delay.
+            val i = Intent(requireActivity(), UserProfileActivity::class.java)
+            val bundle =  Bundle()
+            bundle.putSerializable("user", proArray[position])
+            i.putExtras(bundle)
+            requireActivity().startActivity(i)
 
         }
 
