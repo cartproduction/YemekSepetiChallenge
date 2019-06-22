@@ -1,10 +1,7 @@
 package com.yemeksepeti.challenge.repository
 
-import android.content.Context
-import com.raventech.fujibas.interfaces.ApiClient
 import com.raventech.fujibas.interfaces.ResponsibleAPI
 import com.raventech.fujibas.models.LoginModel
-import com.raventech.fujibas.models.LoginResponse
 import com.yemeksepeti.challenge.R
 import com.yemeksepeti.challenge.application.YemekApp.Companion.TOKEN
 import com.yemeksepeti.challenge.models.UserDetailsModel
