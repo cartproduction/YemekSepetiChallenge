@@ -17,6 +17,9 @@ Using technologies :
 * Glide
 * LiveData
 
+Live on Appetize.io --> https://appetize.io/app/8u3bbhzd9ymc5fvtxqtnph9wu8
+Download APK --> https://drive.google.com/open?id=1Vazz3nB_Z1FrcQxc9d3osl-wHxVN0J4-
+
 ## Developed By
 
 * Serhat Erfidan
