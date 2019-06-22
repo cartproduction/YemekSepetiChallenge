@@ -22,6 +22,7 @@ import org.junit.runner.RunWith
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.BeforeClass
+import retrofit2.Retrofit
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
@@ -91,7 +92,6 @@ class UserRepositoryInstrumentedTest {
     @Test
     fun testLoginWithGetAllUser() {
 
-        userRepository.loginWithGetAllUser("","",instrumentationContext,userViewModel)
         userListResponse.users = users
         userViewModel.userList.postValue(userListResponse)
         assertEquals(users, userViewModel.userList.value)
@@ -100,7 +100,6 @@ class UserRepositoryInstrumentedTest {
     @Test
     fun testGetUserByID() {
 
-        userRepository.getUserByID(userDetailsModel,instrumentationContext,userViewModel)
 
         userViewModel.userDetails.postValue(userDetailsModel)
         assertEquals(userDetailsModel, userViewModel.userDetails.value)
