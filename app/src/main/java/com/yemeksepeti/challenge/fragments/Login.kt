@@ -14,7 +14,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.raventech.fujibas.models.LoginResponse
+import com.raventech.fujibas.interfaces.ApiClient
 import com.yemeksepeti.challenge.R
 import com.yemeksepeti.challenge.activities.MainActivity
 import com.yemeksepeti.challenge.repository.UserRepository
@@ -23,7 +23,6 @@ import com.yemeksepeti.challenge.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.activity_user.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
-
 
 //1
 class Login : Fragment() {
@@ -178,7 +177,8 @@ class Login : Fragment() {
         progressBar.setMessage(getString(R.string.loadingmessage))
         progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressBar.show()
-        userRepository.loginWithGetAllUser(loginEmail.text.toString(),loginPass.text.toString(),requireContext(),userViewModel)
+        userRepository.loginWithGetAllUser(loginEmail.text.toString(),loginPass.text.toString(),
+            ApiClient.getClient(requireContext()),userViewModel)
 
 
 
@@ -193,5 +193,6 @@ class Login : Fragment() {
 
 
   }
+
 
 }

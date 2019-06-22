@@ -6,37 +6,38 @@ import com.raventech.fujibas.interfaces.ResponsibleAPI
 import com.raventech.fujibas.models.LoginModel
 import com.raventech.fujibas.models.LoginResponse
 import com.yemeksepeti.challenge.R
+import com.yemeksepeti.challenge.application.YemekApp.Companion.TOKEN
 import com.yemeksepeti.challenge.models.UserDetailsModel
 import com.yemeksepeti.challenge.models.UserModel
 import com.yemeksepeti.challenge.response.UserListResponse
 import com.yemeksepeti.challenge.viewmodel.UserViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import retrofit2.Retrofit
 import java.util.*
 
 class UserRepository {
 
     private var userList: ArrayList<UserModel> = ArrayList()
     private var testResponse = UserListResponse()
-    fun loginWithGetAllUser(email : String, password : String, context: Context,viewModel: UserViewModel) {
+    fun loginWithGetAllUser(email : String, password : String, apiService: Retrofit,viewModel: UserViewModel) {
 
         val model = LoginModel()
         model.email = email
         model.password = password
 
-        ApiClient.getClient(context)
-            .create(ResponsibleAPI::class.java)
+        apiService.create(ResponsibleAPI::class.java)
             .login(model)
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap { response ->
 
                 if (response != null) {
-                    //Success login
+                    TOKEN = response.accessToken
 
                 } else
-                    throw Throwable(context.getString(R.string.responserror))
+                    throw Throwable("responserror")
 
-                return@flatMap ApiClient.getClient(context)
+                return@flatMap apiService
                     .create(ResponsibleAPI::class.java)
                     .getUsers()
                     .subscribeOn(Schedulers.newThread())
@@ -65,7 +66,7 @@ class UserRepository {
                         viewModel.userList.value = testResponse
 
                     } else
-                        throw Throwable(context.getString(R.string.responserror))
+                        throw Throwable("responserror")
 
 
                 },
@@ -100,10 +101,10 @@ class UserRepository {
             )
     }
 
-    fun getUserByID(user : UserDetailsModel,context: Context,viewModel: UserViewModel) {
+    fun getUserByID(user : UserDetailsModel,apiService: Retrofit,viewModel: UserViewModel) {
 
 
-        ApiClient.getClient(context)
+        apiService
             .create(ResponsibleAPI::class.java)
             .getUserByID(user.userId!!)
             .subscribeOn(Schedulers.newThread())
@@ -114,7 +115,7 @@ class UserRepository {
                         viewModel.userDetails.value = response
 
                     } else
-                        throw Throwable(context.getString(R.string.responserror))
+                        throw Throwable("responserror")
 
 
                 },

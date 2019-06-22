@@ -77,7 +77,7 @@ class UserProfile: Fragment() {
         progressBar.setMessage(getString(R.string.loadingmessage))
         progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressBar.show()
-        userRepository.getUserByID(user,requireContext(),userViewModel)
+        userRepository.getUserByID(user,ApiClient.getClient(requireContext()),userViewModel)
 
 
 

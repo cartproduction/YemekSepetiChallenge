@@ -15,34 +15,8 @@ class YemekApp : Application() {
 
     companion object {
 
-        val applicationID = "30"
         var TOKEN: String? = null
         val BASE_URL = "http://baseUrl.com"
-        val LOGINTEST = "Mobil/LoginTest?"
-        val LOGIN = "Mobil/Login"
-        val SAVE_RANDEVU = "Mobil/SaveRandevu"
-        val SAVE_KAM = "Mobil/PostKampanyaBasvuru"
-        val POST = "Mobil/PostBildirimGeriDonus"
-        val NOTIFICATION = "Mobil/GetBildirim"
-        val NOTIFICATIONS = "Mobil/ListBildirim"
-        val CONFIGURATIONS = "Mobil/GetKonfigurasyon"
-        val CONSTANTS = "Mobil/GetSabit"
-        val DATE = "Mobil/GetRandevu"
-        val DATES = "Mobil/ListRandevu"
-        val CAMPAIGNS = "Mobil/ListKampanya"
-        val CAMPAIGN = "Mobil/GetKampanyaDetay"
-        val KONUM = "Mobil/ListKonumGecmis"
-        val CAR = "Mobil/GetArac"
-        val PROFILE = "Mobil/GetKullaniciProfil"
-        val SYMBOLS = "Mobil/ListSembol"
-
-        /*var siparisler: ArrayList<ProductItem> = object : ArrayList<ProductItem>(){
-            init {
-                add(ProductItem("3 Adet Ürün", "50.000 TL", "Çek", R.mipmap.ordericon, R.mipmap.ic_launcher, R.mipmap.ic_launcher))
-                add(ProductItem("2 Adet Ürün", "30.000 TL", "Çek", R.mipmap.ordergray, R.mipmap.ic_launcher, R.mipmap.ic_launcher))
-
-            }
-        }*/
 
         fun showDatePicker(viewtext: TextView, context: Context) {
             // DatePicker
